@@ -1,8 +1,32 @@
-trigger: none 
-pool: Default
+trigger: 
+ branches:
+   include:
+     - develop
+pool: 
+ name: Jagseer-pc
 
-steps: 
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: 'Write-Host "Hello World"'
+stages:
+  - stage: Linter_and_scanners
+    displayName: React coce linter and scanner
+    jobs:
+      - job: Biome_lint
+        displayName: Lint Javascript(biome)
+        steps :
+        - task: PowerShell@
+          continueOnError: true
+          inputs:
+            targetType: 'inline'
+            script: 'Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/tag/%40biomejs%2Fbiome%402.3.13/biome-win32-x64.exe" -OutFile "$(Agent.ToolsDirectory)/biome.exe" lint "$(System.DefaultWorkingDirectory)/src/'
+
+        - task: NodeTool@0
+          inputs:
+            versionSource: 'spec'
+            versionSpec: '17.x'
+
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: |
+              npm install -g stylelint
+                    npm install -g stylelint-config-standard        
+                    stylelint $(System.DefaultWorkingDirectory)/src --config stylelint.config.mjs
