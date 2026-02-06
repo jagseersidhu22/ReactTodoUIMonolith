@@ -19,6 +19,7 @@ stages:
             script: |
               Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" -OutFile "$(Agent.ToolsDirectory)/biome.exe"
               $(Agent.ToolsDirectory)/biome.exe lint "$(System.DefaultWorkingDirectory)/src/"
+
   - stage: SoftwareCompositionAnalysis
     displayName: Software Composition Analysis (Dependency security)
     jobs:
@@ -39,6 +40,15 @@ stages:
       - job: StaticCode_Analysis
         displayName: Static code Analysis Sonarqube
         steps:
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: |
+              $url = "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.11.x.zip"
+              $out = "$(Agent.TempDirectory)\sonar-scanner.zip"
+              Invoke-WebRequest -Uri $url -OutFile $out
+              Expand-Archive -Path $out -DestinationPath "$(Agent.ToolsDirectory)\sonar-scanner"
+              Write-Host "##vso[task.prependpath]$(Agent.ToolsDirectory)\sonar-scanner\sonar-scanner-4.11.x\bin"
         - task: SonarQubePrepare@8
           inputs:
             SonarQube: 'sonarqube-local'
