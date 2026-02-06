@@ -55,4 +55,4 @@ stages:
         - task: SonarQubePublish@8
           inputs:
             pollingTimeoutSec: '300'
-##
+###
