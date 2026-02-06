@@ -24,4 +24,6 @@ stages:
       - job: Dependencyvulnerabilityscan
         displayName: Dependencies Vulnerability Scan(Retire.js)
         steps:
-           
+        - task: Retire@1
+          inputs:
+            path: '$(System.DefaultWorkingDirectory)/src'
