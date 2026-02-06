@@ -47,7 +47,7 @@ stages:
               $url = "https://binaries.sonarsource.com/Distribution/sonar-scanner-msbuild/sonar-scanner-msbuild-4.7.1.2311-netcoreapp2.0.zip"
               $out = "$(Agent.TempDirectory)\sonar-scanner.zip"
               Invoke-WebRequest -Uri $url -OutFile $out
-              Expand-Archive -Path $out -DestinationPath "$(Agent.ToolsDirectory)\sonar-scanner"
+              Expand-Archive -Path $out -DestinationPath "$(Agent.ToolsDirectory)\sonar-scanner" -Force
               Write-Host "##vso[task.prependpath]$(Agent.ToolsDirectory)\sonar-scanner\sonar-scanner-4.11.x\bin"
         - task: SonarQubePrepare@8
           inputs:
