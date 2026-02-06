@@ -99,12 +99,12 @@ stages:
           inputs:
             PathtoPublish: '$(Build.ArtifactStagingDirectory)/build'
             ArtifactName: 'todo-ui'
-            publishLocation: 'Container'
+            publishLocation: 'pipeline'
                
-  - stage: DeployToDev
-    displayName: Deploy to Dev VM
-    jobs:
-      - job: Deploy
-        displayName: Deploy todo_UI
-        steps:
+  # - stage: DeployToDev
+  #   displayName: Deploy to Dev VM
+  #   jobs:
+  #     - job: Deploy
+  #       displayName: Deploy todo_UI
+  #       steps:
                     
