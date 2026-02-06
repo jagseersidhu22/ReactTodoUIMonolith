@@ -90,10 +90,21 @@ stages:
           inputs:
             targetType: 'inline'
             script: 'npm run build'
-
+        - task: PowerShell@2
+          displayName: Copy Build to Artifact stage
+          inputs:
+            targetType: 'inline'
+            script: 'Copy-Item -Path "$(System.DefaultWorkingDirectory)/build" -Destination "$(Build.ArtifactStagingDirectory)/build" -Recurse -Force'
         - task: PublishBuildArtifacts@1
           inputs:
             PathtoPublish: '$(Build.ArtifactStagingDirectory)/build'
             ArtifactName: 'todo-ui'
             publishLocation: 'Container'
                
+  # - stage: DeployToDev
+  #   displayName: Deploy to Dev VM
+  #   jobs:
+  #     - job: Deploy
+  #       displayName: Deploy todo_UI
+  #       steps:
+                    
