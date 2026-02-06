@@ -34,39 +34,39 @@ stages:
   #             npm install
   #             retire --exitwith 0
 
-  - stage: StaticCodeAnalysis
-    displayName: SCA Sonarqube
-    jobs:
-      - job: StaticCode_Analysis
-        displayName: Static code Analysis Sonarqube
-        steps:
-        - task: PowerShell@2
-          inputs:
-            targetType: 'inline'
-            script: |
-              $url = "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-8.0.1.6346-windows-x64.zip"
-              $out = "$(Agent.TempDirectory)\sonar-scanner.zip"
-              Invoke-WebRequest -Uri $url -OutFile $out
-              Expand-Archive -Path $out -DestinationPath "$(Agent.ToolsDirectory)\sonar-scanner" -Force
-              Write-Host "##vso[task.prependpath]$(Agent.ToolsDirectory)\sonar-scanner\sonar-scanner-8.0.1.6346-windows-x64\bin"
-        - task: PowerShell@2
-          displayName: "Run SonarScanner"
-          inputs:
-            targetType: 'inline'
-            script: |
-              sonar-scanner `
-              -D"sonar.projectKey=todo_app" `
-              -D"sonar.projectName=Todo_app" `
-              -D"sonar.sources=$(System.DefaultWorkingDirectory)/src" `
-              -D"sonar.host.url=http://host.docker.internal:9000" `
-              -D"sonar.login=$(SONAR_TOKENS)" `
-              -D"sonar.branch.name=$main"
+  # - stage: StaticCodeAnalysis
+  #   displayName: SCA Sonarqube
+  #   jobs:
+  #     - job: StaticCode_Analysis
+  #       displayName: Static code Analysis Sonarqube
+  #       steps:
+  #       - task: PowerShell@2
+  #         inputs:
+  #           targetType: 'inline'
+  #           script: |
+  #             $url = "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-8.0.1.6346-windows-x64.zip"
+  #             $out = "$(Agent.TempDirectory)\sonar-scanner.zip"
+  #             Invoke-WebRequest -Uri $url -OutFile $out
+  #             Expand-Archive -Path $out -DestinationPath "$(Agent.ToolsDirectory)\sonar-scanner" -Force
+  #             Write-Host "##vso[task.prependpath]$(Agent.ToolsDirectory)\sonar-scanner\sonar-scanner-8.0.1.6346-windows-x64\bin"
+  #       - task: PowerShell@2
+  #         displayName: "Run SonarScanner"
+  #         inputs:
+  #           targetType: 'inline'
+  #           script: |
+  #             sonar-scanner `
+  #             -D"sonar.projectKey=todo_app" `
+  #             -D"sonar.projectName=Todo_app" `
+  #             -D"sonar.sources=$(System.DefaultWorkingDirectory)/src" `
+  #             -D"sonar.host.url=http://host.docker.internal:9000" `
+  #             -D"sonar.login=$(SONAR_TOKENS)" `
+  #             -D"sonar.branch.name=$main"
 
-        - task: PublishBuildArtifacts@1
-          inputs:
-            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-            ArtifactName: 'Sonarqubereport'
-            publishLocation: 'Container'
+  #       - task: PublishBuildArtifacts@1
+  #         inputs:
+  #           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+  #           ArtifactName: 'Sonarqubereport'
+  #           publishLocation: 'Container'
 
   - stage: BuildAndPackage
     displayName: Build & Artifact Packaging
@@ -93,7 +93,7 @@ stages:
 
         - task: PublishBuildArtifacts@1
           inputs:
-            PathtoPublish: '$(Build.ArtifactStagingDirectory)/build/'
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)/build'
             ArtifactName: 'todo-ui'
             publishLocation: 'Container'
                
