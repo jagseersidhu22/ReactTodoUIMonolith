@@ -30,6 +30,12 @@ stages:
             script: |
               npm install -g retire
               npm install
-              retire -exitwith 0
+              retire --exitwith 0
 
-       
+  - stage: StaticCodeAnalysis
+    displayName: SCA Sonarqube
+    jobs:
+      - job: StaticCode_Analysis
+        displayName: Static code Analysis Sonarqube
+        steps:
+        
