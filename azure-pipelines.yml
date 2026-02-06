@@ -97,6 +97,7 @@ stages:
             publishLocation: 'pipeline'
                
   - stage: DeployToDev
+    condition: eq(variables['Build.SourceBranch'], 'refs/head/main')
     displayName: Deploy to Dev VM
     jobs:
       - job: Deploy
@@ -106,4 +107,18 @@ stages:
            inputs:
             buildType: 'current' # or 'specific' if you want another build
             artifactName: 'todo-ui'
-            targetPath: '$(Pipeline.Workspace)/downloaded_artifact'                   
+            targetPath: '$(Pipeline.Workspace)/downloaded_artifact'
+         - task: CopyFilesOverSSH@0
+           inputs:
+            sshEndpoint: 'ssh-frontvm'
+            sourceFolder: 'Pipeline.Workspace)/downloaded_artifact'
+            contents: '**'
+            targetFolder: 'home/devopsadmin'
+            readyTimeout: '20000'
+
+         - task: SSH@0
+           inputs:
+             sshEndpoint: 'ssh-frontvm'
+             runOptions: 'commands'
+             commands: 'sudo cp -r /home/devopsadmin/* /var/www/html'
+             readyTimeout: '20000'
