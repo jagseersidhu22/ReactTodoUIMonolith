@@ -97,7 +97,6 @@ stages:
             publishLocation: 'pipeline'
                
   - stage: DeployToDev
-    condition: eq(variables['Build.SourceBranch'], 'refs/head/main')
     displayName: Deploy to Dev VM
     jobs:
       - job: Deploy
