@@ -101,10 +101,10 @@ stages:
             ArtifactName: 'todo-ui'
             publishLocation: 'Container'
                
-  # - stage: DeployToDev
-  #   displayName: Deploy to Dev VM
-  #   jobs:
-  #     - job: Deploy
-  #       displayName: Deploy todo_UI
-  #       steps:
+  - stage: DeployToDev
+    displayName: Deploy to Dev VM
+    jobs:
+      - job: Deploy
+        displayName: Deploy todo_UI
+        steps:
                     
