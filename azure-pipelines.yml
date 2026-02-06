@@ -60,7 +60,7 @@ stages:
               -D"sonar.sources=$(System.DefaultWorkingDirectory)/src" `
               -D"sonar.host.url=http://host.docker.internal:9000" `
               -D"sonar.login=$(SONAR_TOKENS)" `
-              -D"sonar.branch.name=$(Build.SourceBranchName)"
+              -D"sonar.branch.name=$main"
 
         - task: PublishBuildArtifacts@1
           inputs:
