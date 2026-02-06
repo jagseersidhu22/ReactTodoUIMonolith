@@ -1,7 +1,7 @@
 trigger: 
  branches:
    include:
-     - develop
+     - main
 pool: 
  name: Jagseer-pc
 
