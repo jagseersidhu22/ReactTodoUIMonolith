@@ -44,27 +44,56 @@ stages:
           inputs:
             targetType: 'inline'
             script: |
-              $url = "https://binaries.sonarsource.com/Distribution/sonar-scanner-msbuild/sonar-scanner-msbuild-4.7.1.2311-netcoreapp2.0.zip"
+              $url = "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-8.0.1.6346-windows-x64.zip"
               $out = "$(Agent.TempDirectory)\sonar-scanner.zip"
               Invoke-WebRequest -Uri $url -OutFile $out
               Expand-Archive -Path $out -DestinationPath "$(Agent.ToolsDirectory)\sonar-scanner" -Force
-              Write-Host "##vso[task.prependpath]$(Agent.ToolsDirectory)\sonar-scanner\sonar-scanner-4.11.x\bin"
-        - task: SonarQubePrepare@8
+              Write-Host "##vso[task.prependpath]$(Agent.ToolsDirectory)\sonar-scanner\sonar-scanner-8.0.1.6346-windows-x64\bin"
+        - task: PowerShell@2
+          displayName: "Run SonarScanner"
           inputs:
-            SonarQube: 'sonarqube-local'
-            scannerMode: 'cli'
-            cliScannerVersion: '4.11.x'
-            configMode: 'manual'
-            cliProjectKey: 'Todo_app'
-            cliProjectName: 'Todo_app'
-            cliSources: 'src'
+            targetType: 'inline'
+            script: |
+              sonar-scanner `
+              -D"sonar.projectKey=Todo_app" `
+              -D"sonar.projectName=Todo_app" `
+              -D"sonar.sources=$(System.DefaultWorkingDirectory)/src" `
+              -D"sonar.host.url=http://host.docker.internal:9000" `
+              -D"sonar.login=${env:SONAR_TOKEN}" `
+              -D"sonar.branch.name=$(Build.SourceBranchName)"
 
-        - task: SonarQubeAnalyze@8
+        - task: PublishBuildArtifacts@1
           inputs:
-            jdkversion: 'JAVA_HOME_17_X64'    
-        - task: SonarQubePublish@8
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            ArtifactName: 'Sonarqubereport'
+            publishLocation: 'Container'
+
+  - stage: BuildAndPackage
+    displayName: Build & Artifact Packaging
+    jobs:
+      - job: ApplicationBuild
+        displayName: Application Build
+        steps:
+        - task: NodeTool@0
+          displayName: Node js installer
           inputs:
-            pollingTimeoutSec: '300'
+            versionSource: 'spec'
+            versionSpec: '16.x'
 
-##
+        - task: PowerShell@2
+          displayName: Install Dependencies
+          inputs:
+            targetType: 'inline'
+            script: 'npm install'
 
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: 'npm run build'
+
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)/build/'
+            ArtifactName: 'todo-ui'
+            publishLocation: 'Container'
+               
