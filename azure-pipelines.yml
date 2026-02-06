@@ -55,7 +55,7 @@ stages:
             targetType: 'inline'
             script: |
               sonar-scanner `
-              -D"sonar.projectKey=Todo_app" `
+              -D"sonar.projectKey=todo_app" `
               -D"sonar.projectName=Todo_app" `
               -D"sonar.sources=$(System.DefaultWorkingDirectory)/src" `
               -D"sonar.host.url=http://host.docker.internal:9000" `
