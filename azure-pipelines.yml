@@ -24,6 +24,12 @@ stages:
       - job: Dependencyvulnerabilityscan
         displayName: Dependencies Vulnerability Scan(Retire.js)
         steps:
-        - task: Retire@1
+        - task: PowerShell@2
           inputs:
-            path: '$(System.DefaultWorkingDirectory)/src'
+            targetType: 'inline'
+            script: |
+              npm install -g retire
+              npm install
+              retire -exitwith 0
+
+       
