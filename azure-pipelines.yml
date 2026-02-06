@@ -44,7 +44,7 @@ stages:
           inputs:
             targetType: 'inline'
             script: |
-              $url = "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.11.x.zip"
+              $url = "https://binaries.sonarsource.com/Distribution/sonar-scanner-msbuild/sonar-scanner-msbuild-4.7.1.2311-netcoreapp2.0.zip"
               $out = "$(Agent.TempDirectory)\sonar-scanner.zip"
               Invoke-WebRequest -Uri $url -OutFile $out
               Expand-Archive -Path $out -DestinationPath "$(Agent.ToolsDirectory)\sonar-scanner"
