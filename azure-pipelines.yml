@@ -3,7 +3,7 @@ trigger:
    include:
      - develop
 pool: 
- name: Jagseer-mac
+ name: Jagseer-pc
 
 stages:
   - stage: Linter_and_scanners
@@ -17,6 +17,11 @@ stages:
           inputs:
             targetType: 'inline'
             script: |
-              'Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" -OutFile "$(Agent.ToolsDirectory)/biome.exe" $(Agent.ToolsDirectory)/biome.exe lint $(System.DefaultWorkingDirectory)/src/'
-
-      
+              Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" -OutFile "$(Agent.ToolsDirectory)/biome.exe" $(Agent.ToolsDirectory)/biome.exe lint "$(System.DefaultWorkingDirectory)/src/"
+  - stage: SoftwareCompositionAnalysis
+    displayName: Software Composition Analysis (Dependency security)
+    jobs:
+      - job: Dependencyvulnerabilityscan
+        displayName: Dependencies Vulnerability Scan(Retire.js)
+        steps:
+           
