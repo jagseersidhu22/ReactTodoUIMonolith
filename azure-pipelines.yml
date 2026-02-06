@@ -17,7 +17,8 @@ stages:
           inputs:
             targetType: 'inline'
             script: |
-              Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" -OutFile "$(Agent.ToolsDirectory)/biome.exe" $(Agent.ToolsDirectory)/biome.exe lint "$(System.DefaultWorkingDirectory)/src/"
+              Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" -OutFile "$(Agent.ToolsDirectory)/biome.exe"
+              $(Agent.ToolsDirectory)/biome.exe lint "$(System.DefaultWorkingDirectory)/src/"
   - stage: SoftwareCompositionAnalysis
     displayName: Software Composition Analysis (Dependency security)
     jobs:
@@ -38,4 +39,20 @@ stages:
       - job: StaticCode_Analysis
         displayName: Static code Analysis Sonarqube
         steps:
-        
+        - task: SonarQubePrepare@8
+          inputs:
+            SonarQube: 'sonarqube-local'
+            scannerMode: 'cli'
+            cliScannerVersion: '4.11.x'
+            configMode: 'manual'
+            cliProjectKey: 'Todo_app'
+            cliProjectName: 'Todo_app'
+            cliSources: 'src'
+
+        - task: SonarQubeAnalyze@8
+          inputs:
+            jdkversion: 'JAVA_HOME_17_X64'    
+        - task: SonarQubePublish@8
+          inputs:
+            pollingTimeoutSec: '300'
+
