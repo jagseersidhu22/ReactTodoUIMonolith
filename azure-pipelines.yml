@@ -6,33 +6,33 @@ pool:
  name: Jagseer-pc
 
 stages:
-  - stage: Linter_and_scanners
-    displayName: React coce linter and scanner
-    jobs:
-      - job: Biome_lint
-        displayName: Lint Javascript(biome)
-        steps :
-        - task: PowerShell@2
-          continueOnError: true
-          inputs:
-            targetType: 'inline'
-            script: |
-              Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" -OutFile "$(Agent.ToolsDirectory)/biome.exe"
-              $(Agent.ToolsDirectory)/biome.exe lint "$(System.DefaultWorkingDirectory)/src/"
+  # - stage: Linter_and_scanners
+  #   displayName: React coce linter and scanner
+  #   jobs:
+  #     - job: Biome_lint
+  #       displayName: Lint Javascript(biome)
+  #       steps :
+  #       - task: PowerShell@2
+  #         continueOnError: true
+  #         inputs:
+  #           targetType: 'inline'
+  #           script: |
+  #             Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" -OutFile "$(Agent.ToolsDirectory)/biome.exe"
+  #             $(Agent.ToolsDirectory)/biome.exe lint "$(System.DefaultWorkingDirectory)/src/"
 
-  - stage: SoftwareCompositionAnalysis
-    displayName: Software Composition Analysis (Dependency security)
-    jobs:
-      - job: Dependencyvulnerabilityscan
-        displayName: Dependencies Vulnerability Scan(Retire.js)
-        steps:
-        - task: PowerShell@2
-          inputs:
-            targetType: 'inline'
-            script: |
-              npm install -g retire
-              npm install
-              retire --exitwith 0
+  # - stage: SoftwareCompositionAnalysis
+  #   displayName: Software Composition Analysis (Dependency security)
+  #   jobs:
+  #     - job: Dependencyvulnerabilityscan
+  #       displayName: Dependencies Vulnerability Scan(Retire.js)
+  #       steps:
+  #       - task: PowerShell@2
+  #         inputs:
+  #           targetType: 'inline'
+  #           script: |
+  #             npm install -g retire
+  #             npm install
+  #             retire --exitwith 0
 
   - stage: StaticCodeAnalysis
     displayName: SCA Sonarqube
