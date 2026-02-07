@@ -110,7 +110,7 @@ stages:
          - task: CopyFilesOverSSH@0
            inputs:
             sshEndpoint: 'ssh-frontvm'
-            sourceFolder: 'Pipeline.Workspace)/downloaded_artifact'
+            sourceFolder: '$(Pipeline.Workspace)/downloaded_artifact'
             contents: '**'
             targetFolder: 'home/devopsadmin'
             readyTimeout: '20000'
