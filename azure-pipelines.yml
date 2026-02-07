@@ -6,67 +6,67 @@ pool:
  name: Jagseer-pc
 
 stages:
-  # - stage: Linter_and_scanners
-  #   displayName: React coce linter and scanner
-  #   jobs:
-  #     - job: Biome_lint
-  #       displayName: Lint Javascript(biome)
-  #       steps :
-  #       - task: PowerShell@2
-  #         continueOnError: true
-  #         inputs:
-  #           targetType: 'inline'
-  #           script: |
-  #             Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" -OutFile "$(Agent.ToolsDirectory)/biome.exe"
-  #             $(Agent.ToolsDirectory)/biome.exe lint "$(System.DefaultWorkingDirectory)/src/"
+  - stage: Linter_and_scanners
+    displayName: React coce linter and scanner
+    jobs:
+      - job: Biome_lint
+        displayName: Lint Javascript(biome)
+        steps :
+        - task: PowerShell@2
+          continueOnError: true
+          inputs:
+            targetType: 'inline'
+            script: |
+              Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" -OutFile "$(Agent.ToolsDirectory)/biome.exe"
+              $(Agent.ToolsDirectory)/biome.exe lint "$(System.DefaultWorkingDirectory)/src/"
 
-  # - stage: SoftwareCompositionAnalysis
-  #   displayName: Software Composition Analysis (Dependency security)
-  #   jobs:
-  #     - job: Dependencyvulnerabilityscan
-  #       displayName: Dependencies Vulnerability Scan(Retire.js)
-  #       steps:
-  #       - task: PowerShell@2
-  #         inputs:
-  #           targetType: 'inline'
-  #           script: |
-  #             npm install -g retire
-  #             npm install
-  #             retire --exitwith 0
+  - stage: SoftwareCompositionAnalysis
+    displayName: Software Composition Analysis (Dependency security)
+    jobs:
+      - job: Dependencyvulnerabilityscan
+        displayName: Dependencies Vulnerability Scan(Retire.js)
+        steps:
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: |
+              npm install -g retire
+              npm install
+              retire --exitwith 0
 
-  # - stage: StaticCodeAnalysis
-  #   displayName: SCA Sonarqube
-  #   jobs:
-  #     - job: StaticCode_Analysis
-  #       displayName: Static code Analysis Sonarqube
-  #       steps:
-  #       - task: PowerShell@2
-  #         inputs:
-  #           targetType: 'inline'
-  #           script: |
-  #             $url = "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-8.0.1.6346-windows-x64.zip"
-  #             $out = "$(Agent.TempDirectory)\sonar-scanner.zip"
-  #             Invoke-WebRequest -Uri $url -OutFile $out
-  #             Expand-Archive -Path $out -DestinationPath "$(Agent.ToolsDirectory)\sonar-scanner" -Force
-  #             Write-Host "##vso[task.prependpath]$(Agent.ToolsDirectory)\sonar-scanner\sonar-scanner-8.0.1.6346-windows-x64\bin"
-  #       - task: PowerShell@2
-  #         displayName: "Run SonarScanner"
-  #         inputs:
-  #           targetType: 'inline'
-  #           script: |
-  #             sonar-scanner `
-  #             -D"sonar.projectKey=todo_app" `
-  #             -D"sonar.projectName=Todo_app" `
-  #             -D"sonar.sources=$(System.DefaultWorkingDirectory)/src" `
-  #             -D"sonar.host.url=http://host.docker.internal:9000" `
-  #             -D"sonar.login=$(SONAR_TOKENS)" `
-  #             -D"sonar.branch.name=$main"
+  - stage: StaticCodeAnalysis
+    displayName: SCA Sonarqube
+    jobs:
+      - job: StaticCode_Analysis
+        displayName: Static code Analysis Sonarqube
+        steps:
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: |
+              $url = "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-8.0.1.6346-windows-x64.zip"
+              $out = "$(Agent.TempDirectory)\sonar-scanner.zip"
+              Invoke-WebRequest -Uri $url -OutFile $out
+              Expand-Archive -Path $out -DestinationPath "$(Agent.ToolsDirectory)\sonar-scanner" -Force
+              Write-Host "##vso[task.prependpath]$(Agent.ToolsDirectory)\sonar-scanner\sonar-scanner-8.0.1.6346-windows-x64\bin"
+        - task: PowerShell@2
+          displayName: "Run SonarScanner"
+          inputs:
+            targetType: 'inline'
+            script: |
+              sonar-scanner `
+              -D"sonar.projectKey=todo_app" `
+              -D"sonar.projectName=Todo_app" `
+              -D"sonar.sources=$(System.DefaultWorkingDirectory)/src" `
+              -D"sonar.host.url=http://host.docker.internal:9000" `
+              -D"sonar.login=$(SONAR_TOKENS)" `
+              -D"sonar.branch.name=$main"
 
-  #       - task: PublishBuildArtifacts@1
-  #         inputs:
-  #           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-  #           ArtifactName: 'Sonarqubereport'
-  #           publishLocation: 'Container'
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            ArtifactName: 'Sonarqubereport'
+            publishLocation: 'Container'
 
   - stage: BuildAndPackage
     displayName: Build & Artifact Packaging
