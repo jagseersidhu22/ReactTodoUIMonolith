@@ -112,7 +112,7 @@ stages:
             sshEndpoint: 'ssh-frontvm'
             sourceFolder: '$(Pipeline.Workspace)/downloaded_artifact'
             contents: '**'
-            targetFolder: 'home/devopsadmin'
+            targetFolder: '/home/devopsadmin'
             readyTimeout: '20000'
 
          - task: SSH@0
