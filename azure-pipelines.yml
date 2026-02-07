@@ -114,7 +114,17 @@ stages:
             contents: '**'
             targetFolder: '/home/azureuser'
             readyTimeout: '20000'
-
+         - task: SSH@0
+           inputs:
+             sshEndpoint: 'ssh-frontvm'
+             runOptions: 'commands'
+             commands: |
+               sudo apt update -y
+               sudo apt install -y nginx
+               sudo mkdir -p /var/www/html
+               sudo cp -r /home/devopsadmin/build/* /var/www/html/
+                sudo systemctl restart nginx
+             readyTimeout: '20000'
          - task: SSH@0
            inputs:
              sshEndpoint: 'ssh-frontvm'
